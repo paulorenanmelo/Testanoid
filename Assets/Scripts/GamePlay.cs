@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GamePlay : MonoBehaviour
 {
@@ -13,20 +14,38 @@ public class GamePlay : MonoBehaviour
         {
             if (_instance == null)
             {
-                var go = new GameObject("GamePlay");
-                _instance = go.AddComponent<GamePlay>();
+                _instance = FindObjectOfType<GamePlay>();
+                if (_instance == null)
+                {
+                    var go = new GameObject("GamePlay");
+                    _instance = go.AddComponent<GamePlay>();
+                }
             }
 
             return _instance;
         }
     }
-    
+
+    internal void Scored(int scoreGained)
+    {
+        Score = (uint)Mathf.Max(Score - scoreGained, 0);
+        onScoreChanged.Invoke((int)Score);
+    }
+
+    #region Delegates / events / actions
+    public static event UnityAction onLoadingBegin;
+    public static event UnityAction onLoadingComplete;
+    public static event UnityAction<int> onScoreChanged;
+    public static event UnityAction<int> onLifeChanged;
+    public static event UnityAction onEndGame;
+
+    // Wanna subscribe to one of the above events? Copy lines below to Start() and OnDestroy() respectively, or OnEnable() and OnDisable()
+    //GameController.onLoadingComplete += MyListenerClass_LoadingCompleteMethod;
+    //GameController.onLoadingComplete -= MyListenerClass_LoadingCompleteMethod;
+    #endregion
+
     public BallController Ball;
     public PlayerController Player;
-
-    public TextMeshProUGUI ScoreLabel;
-    public TextMeshProUGUI LivesLabel;
-    public TextMeshProUGUI GetReadyLabel;
 
     public uint Score = 0;
     public uint Lives = 3;
@@ -41,22 +60,23 @@ public class GamePlay : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        
+        if(onLoadingBegin != null)
+            onLoadingBegin.Invoke();
         Reset();
     }
 
     public void Goal()
     {
-        GetReadyLabel.enabled = true;
+        if (onEndGame != null)
+            onEndGame.Invoke();
+        
         var pos1 = Player.transform.position;
         pos1.x = 0f;
         Player.transform.position = pos1;
 
         Ball.transform.position = Vector3.zero;
         Ball.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-
-        ScoreLabel.text = GamePlay.Instance.Score.ToString();
-        LivesLabel.text = GamePlay.Instance.Lives.ToString();
+        
 
         StartCoroutine(StartGame());
     }
@@ -74,7 +94,9 @@ public class GamePlay : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
 
-        GetReadyLabel.enabled = false;
+        if (onLoadingBegin != null)
+            onLoadingBegin.Invoke();
+
         _gameOver = false;
         Ball.Kick();
     }
@@ -93,9 +115,6 @@ public class GamePlay : MonoBehaviour
 #endif
 
         if (_gameOver) return;
-
-        ScoreLabel.text = GamePlay.Instance.Score.ToString();
-        LivesLabel.text = GamePlay.Instance.Lives.ToString();
 
         if (Score == Briks)
         {
