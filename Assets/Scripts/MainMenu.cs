@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Input of the main scene (main menu) to start the gameplay.
+/// </summary>
 public class MainMenu : MonoBehaviour
 {
     private void Update()

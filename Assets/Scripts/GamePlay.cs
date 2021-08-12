@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,9 +24,9 @@ public class GamePlay : MonoBehaviour
     public BallController Ball;
     public PlayerController Player;
 
-    public Text ScoreLabel;
-    public Text LivesLabel;
-    public Text GetReadyLabel;
+    public TextMeshProUGUI ScoreLabel;
+    public TextMeshProUGUI LivesLabel;
+    public TextMeshProUGUI GetReadyLabel;
 
     public uint Score = 0;
     public uint Lives = 3;
