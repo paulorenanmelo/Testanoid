@@ -1,15 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(TextMeshProUGUI))]
 public class TopScore : MonoBehaviour
 {
-    public Text Label;
+    private TextMeshProUGUI Label;
     
     private void Awake()
     {
-        var n = GamePlay.Instance.Score;
-        Label.text += n.ToString();
+        Label = GetComponent<TextMeshProUGUI>();
+        if (Label == null) return;
+
+        Label.text += GamePlay.Instance.Score.ToString();
     }
 }

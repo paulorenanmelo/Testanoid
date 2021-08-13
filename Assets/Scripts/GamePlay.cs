@@ -28,8 +28,9 @@ public class GamePlay : MonoBehaviour
 
     internal void Scored(int scoreGained)
     {
-        Score = (uint)Mathf.Max(Score - scoreGained, 0);
-        onScoreChanged.Invoke((int)Score);
+        Score = (uint)Mathf.Max(Score + scoreGained, 0);
+        if(onScoreChanged != null)
+            onScoreChanged.Invoke((int)Score);
     }
 
     #region Delegates / events / actions
