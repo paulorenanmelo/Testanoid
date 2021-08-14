@@ -8,7 +8,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float _velocity;
+    [SerializeField] private float _velocity = 1f;
+    [SerializeField] private float _maxSpeed = 6f;
 
     private Rigidbody2D rbody;
 
@@ -21,15 +22,19 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            rbody.velocity = Vector2.left * _velocity;
+            if (rbody.velocity.x < _maxSpeed)
+                rbody.AddForce(Vector2.left * _velocity);
+            //rbody.velocity = Vector2.left * _velocity;
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            rbody.velocity = Vector2.right * _velocity;
+            if (rbody.velocity.x < _maxSpeed)
+                rbody.AddForce(Vector2.right * _velocity);
+            //rbody.velocity = Vector2.right * _velocity;
         }
         else
         {
-            rbody.velocity = Vector2.zero;
+            //rbody.velocity = Vector2.zero;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -26,13 +25,6 @@ public class GamePlay : MonoBehaviour
         }
     }
 
-    internal void Scored(int scoreGained)
-    {
-        Score = (uint)Mathf.Max(Score + scoreGained, 0);
-        if(onScoreChanged != null)
-            onScoreChanged.Invoke((int)Score);
-    }
-
     #region Delegates / events / actions
     public static event UnityAction onLoadingBegin;
     public static event UnityAction onLoadingComplete;
@@ -50,10 +42,29 @@ public class GamePlay : MonoBehaviour
 
     public uint Score = 0;
     public uint Lives = 3;
+    public uint Briks = 4;
 
-    uint Briks = 4;
     private bool _gameOver = false;
 
+    private IEnumerator StartGame()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (Ball == null)
+            Ball = FindObjectOfType<BallController>();
+        if (Player == null)
+            Player = FindObjectOfType<PlayerController>();
+
+        if (onLoadingBegin != null)
+            onLoadingBegin.Invoke();
+
+        _gameOver = false;
+
+        if(Ball != null)
+            Ball.Kick();
+    }
+
+    #region Unity methods
     private void Awake()
     {
         if (_instance == null)
@@ -61,25 +72,9 @@ public class GamePlay : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        if(onLoadingBegin != null)
+        if (onLoadingBegin != null)
             onLoadingBegin.Invoke();
         Reset();
-    }
-
-    public void Goal()
-    {
-        if (onEndGame != null)
-            onEndGame.Invoke();
-        
-        var pos1 = Player.transform.position;
-        pos1.x = 0f;
-        Player.transform.position = pos1;
-
-        Ball.transform.position = Vector3.zero;
-        Ball.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-        
-
-        StartCoroutine(StartGame());
     }
 
     private void Reset()
@@ -91,20 +86,9 @@ public class GamePlay : MonoBehaviour
         Goal();
     }
 
-    private IEnumerator StartGame()
-    {
-        yield return new WaitForSeconds(3f);
-
-        if (onLoadingBegin != null)
-            onLoadingBegin.Invoke();
-
-        _gameOver = false;
-        Ball.Kick();
-    }
-
     private void Update()
     {
-#if true //debug commands
+#if DEBUG //debug commands
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Lives = 0;
@@ -128,4 +112,32 @@ public class GamePlay : MonoBehaviour
             _gameOver = true;
         }
     }
+    #endregion
+
+    #region Public methods
+    public void Scored(int scoreGained)
+    {
+        Score = (uint)Mathf.Max(Score + scoreGained, 0);
+        if (onScoreChanged != null)
+            onScoreChanged.Invoke((int)Score);
+    }
+
+    public void Goal()
+    {
+        if (onEndGame != null)
+            onEndGame.Invoke();
+
+        Debug.Log("Goal");
+
+        var pos1 = Player.transform.position;
+        pos1.x = 0f;
+        Player.transform.position = pos1;
+
+        Ball.transform.position = Vector3.zero;
+        Ball.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+
+
+        StartCoroutine(StartGame());
+    }
+    #endregion
 }
