@@ -11,36 +11,36 @@ public class GUIController : MonoBehaviour
 
     void Start()
     {
-        GamePlay.onEndGame += GamePlay_onEndGame;
+        GamePlay.onGoal += GamePlay_onEndGame;
         GamePlay.onLoadingBegin += GamePlay_onLoadingBegin;
         GamePlay.onLoadingComplete += GamePlay_onLoadingComplete;
     }
 
     private void OnDestroy()
     {
-        GamePlay.onEndGame -= GamePlay_onEndGame;
+        GamePlay.onGoal -= GamePlay_onEndGame;
         GamePlay.onLoadingBegin -= GamePlay_onLoadingBegin;
         GamePlay.onLoadingComplete -= GamePlay_onLoadingComplete;
     }
     private void Update()
     {
-        ScoreLabel.text = GamePlay.Instance.Score.ToString();
+        ScoreLabel.text = GamePlay.Instance.TotalScore.ToString();
         LivesLabel.text = GamePlay.Instance.Lives.ToString();
     }
     private void GamePlay_onLoadingComplete()
     {
-        GetReadyLabel.enabled = true;
+        GetReadyLabel.enabled = false;
     }
 
     private void GamePlay_onLoadingBegin()
     {
-        GetReadyLabel.enabled = false;
+        GetReadyLabel.enabled = true;
     }
 
     private void GamePlay_onEndGame()
     {
         GetReadyLabel.enabled = true;
-        ScoreLabel.text = GamePlay.Instance.Score.ToString();
+        ScoreLabel.text = GamePlay.Instance.TotalScore.ToString();
         LivesLabel.text = GamePlay.Instance.Lives.ToString();
     }
 }

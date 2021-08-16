@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,5 +37,12 @@ public class PlayerController : MonoBehaviour
         {
             //rbody.velocity = Vector2.zero;
         }
+    }
+
+    public void Reset()
+    {
+        var pos1 = transform.position;
+        pos1.x = 0f;
+        transform.position = pos1;
     }
 }

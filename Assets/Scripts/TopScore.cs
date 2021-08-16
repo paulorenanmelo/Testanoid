@@ -12,6 +12,6 @@ public class TopScore : MonoBehaviour
         Label = GetComponent<TextMeshProUGUI>();
         if (Label == null) return;
 
-        Label.text += GamePlay.Instance.Score.ToString();
+        Label.text += Stats.Instance.TotalScore.ToString();
     }
 }
