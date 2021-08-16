@@ -37,8 +37,8 @@ public class GamePlay : MonoBehaviour
     public static event UnityAction onGoal;
 
     // Wanna subscribe to one of the above events? Copy lines below to Start() and OnDestroy() respectively, or OnEnable() and OnDisable()
-    //GameController.onLoadingComplete += MyListenerClass_LoadingCompleteMethod;
-    //GameController.onLoadingComplete -= MyListenerClass_LoadingCompleteMethod;
+    //GamePlay.onLoadingComplete += MyListenerClass_LoadingCompleteMethod;
+    //GamePlay.onLoadingComplete -= MyListenerClass_LoadingCompleteMethod;
     #endregion
 
     #region Getters / Setters
@@ -106,10 +106,8 @@ public class GamePlay : MonoBehaviour
 
         if (Lives <= 0)
         {
-            Lives = 3;
-            TotalScore = 0;
+            Reset();
         }
-        Score = 0;
         _gameOver = false;
 
         if(Ball != null)
